@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/mvc
+                            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                            http://code.alibabatech.com/schema/dubbo
+                            http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/security
+                            http://www.springframework.org/schema/security/spring-security.xsd">
+    <!--配置匿名访问资源-->
+    <security:http pattern="/css/**" security="none"/>
+    <security:http pattern="/img/**" security="none"/>
+    <security:http pattern="/js/**" security="none"/>
+    <security:http pattern="/plugins/**" security="none"/>
+    <security:http pattern="/login.html" security="none"/>
+
+    <!--模拟如果用户没有认证（登录） 跳转登录页面
+    auto-config:自动配置 例如：没有指定登录页面，框架会自动配置生成登录页面
+    use-expressions:true:使用表达式  false：不使用表达式 spring提供的表达式
+    -->
+    <security:http auto-config="true" use-expressions="true">
+        <!--intercept-url:配置拦截规范
+        /*：拦截单层路径
+        /**:拦截多层路径  粒度比较大 所有页面请求都拦截 /a.html /abc.do
+        intercept-url一般配置拦截页面即可 例如：web工程中pages目录
+        *.do请求使用粒度比较小的方式，注解方式（在需要权限控制的方法上加上注解就可以权限拦截）
+        access当前用户有xx权限 就可以方访问pattern指定规则下所有资源
+        授权权限：角色表中关键字ROLE_xxx  权限表：没有ROLE开头 add delete
+
+
+        配置多个过滤器，顺序执行，只要满足其中一个就不会往后执行了。
+        pattern：不能配置相同的，如果就不知道走哪个规则了
+        -->
+
+        <!--只要认证通过就可以访问
+        isAuthenticated:已经认证就可以访问此页面
+        -->
+        <security:intercept-url pattern="/pages/**"  access="isAuthenticated()" />
+
+         <!--配置登录
+        always-use-default-target default-target-url: index.html 没有认证会跳转登录页面 有权限跳转index.html
+        login-processing-url:登录请求跟页面请求一致即可
+        login-page：登录页面
+        username-parameter password-parameter:登录用户名和页面name属性保持一致
+        authentication-failure-forward-url：登录失败页面
+        -->
+        <security:form-login always-use-default-target="true" default-target-url="/index.html"
+                             login-processing-url="/login.do" login-page="/login.html" authentication-failure-forward-url="/login.html"/>
+
+        <!--登出配置
+        logout-url：登出请求
+        invalidate-session:删除session
+        logout-success-url：登出跳转登录页面
+        -->
+        <security:logout logout-success-url="/login.html" invalidate-session="true" logout-url="/logout.do"/>
+        <!--禁用csrf跨站攻击 disabled:禁用 true:把csrf关闭-->
+        <security:csrf disabled="true"/>
+    </security:http>
+
+    <!--配置认证管理-->
+    <!--<security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service>
+                &lt;!&ndash;写死账号和密码 以及 认证成功后的权限
+                name:登录账号 password:密码 {noop}不加密 authorities：认证成功后授权ROLE_ADMIN
+                &ndash;&gt;
+                <security:user name="admin" authorities="ROLE_ADMIN" password="{noop}123"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>-->
+
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="mySecurityService">
+            <!--配置加密方式-->
+            <security:password-encoder ref="bCryptPasswordEncoder"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <!--注册自定义认证授权类-->
+    <bean id="mySecurityService" class="com.itheima.security.MySecurityService"/>
+
+    <!--密码加密对象bcryt-->
+    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+    <!--扫描包-->
+    <context:component-scan base-package="com"/>
+
+    <!--开启注解方式权限控制-->
+    <security:global-method-security pre-post-annotations="enabled" />
+</beans>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分页组件</title>
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="js/index.css">
+    <script src="js/vue.js"></script>
+    <script src="js/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--
+    el-pagination：分页组件
+        current-page:默认页面 一般设置为第一页
+        page-sizes:每页显示条数选中
+        total：总记录数
+    -->
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage4"
+            :page-sizes="[10, 20, 30, 40]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="400">
+    </el-pagination>
+
+
+
+
+
+
+
+</div>
+<script>
+    new Vue({
+        el:"#app",
+        methods: {
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                //设置每页显示条数 并发送分页请求
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                ////设置当前每页页码 并发送分页请求
+            }
+        },
+        data() {
+            return {
+                currentPage1: 5,
+                currentPage2: 5,
+                currentPage3: 5,
+                currentPage4: 1
+            };
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签页</title>
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="js/index.css">
+    <script src="js/vue.js"></script>
+    <script src="js/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--
+    <el-tabs:标签页组件
+    el-tab-pane：新增选项卡标签
+    -->
+
+    <template>
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
+            <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+            <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+            <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+        </el-tabs>
+    </template>
+
+</div>
+<script>
+    new Vue({
+        el:"#app",
+        data() {
+            return {
+                activeName: 'second'
+            };
+        },
+        methods: {
+            handleClick(tab, event) {
+                console.log(tab, event);
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dropdown 下拉菜单</title>
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="js/index.css">
+    <script src="js/vue.js"></script>
+    <script src="js/index.js"></script>
+</head>
+<body>
+<div id="app">
+
+    <!--dropdown-->
+    <el-dropdown trigger="click">
+      <span class="el-dropdown-link">
+        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+        <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="el-icon-plus">妹子1</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-circle-plus">不要睡觉</el-dropdown-item>
+        </el-dropdown-menu>
+    </el-dropdown>
+
+
+
+
+    <style>
+        .el-dropdown-link {
+            cursor: pointer;
+            color: #409EFF;
+        }
+        .el-icon-arrow-down {
+            font-size: 12px;
+        }
+        .demonstration {
+            display: block;
+            color: #8492a6;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+</div>
+<script>
+    new Vue({
+        el:"#app"
+    })
+</script>
+</body>
+</html>
