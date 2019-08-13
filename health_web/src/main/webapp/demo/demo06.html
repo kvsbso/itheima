@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>消息提示框</title>
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="js/index.css">
+    <script src="js/vue.js"></script>
+    <script src="js/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--
+    message:需要弹出消息
+    type：消息提示框类型
+    方式一：
+    this.$message({
+                    message: '警告哦，这是一条警告消息',
+                    type: 'warning'
+                });
+
+     方式二：
+     this.$message.error('错了哦，这是一条错误消息');
+
+    -->
+    <template>
+        <el-button :plain="true" @click="open2">成功</el-button>
+        <el-button :plain="true" @click="open3">警告</el-button>
+        <el-button :plain="true" @click="open1">消息</el-button>
+        <el-button :plain="true" @click="open4">错误</el-button>
+    </template>
+
+
+
+</div>
+<script>
+    new Vue({
+        el:"#app",
+        methods: {
+            open1() {
+                this.$message('这是一条消息提示');
+            },
+            open2() {
+                this.$message({
+                    message: '恭喜你，这是一条成功消息',
+                    type: 'success'
+                });
+            },
+
+            open3() {
+                this.$message({
+                    message: '警告哦，这是一条警告消息',
+                    type: 'warning'
+                });
+            },
+
+            open4() {
+                this.$message.error('错了哦，这是一条错误消息');
+            }
+        }
+    })
+</script>
+</body>
+</html>

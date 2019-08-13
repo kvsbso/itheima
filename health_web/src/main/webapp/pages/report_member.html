@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>传智健康</title>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../plugins/echarts/echarts.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="content-header">
+        <h1>统计分析
+            <small>会员数量</small>
+        </h1>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>统计分析</el-breadcrumb-item>
+            <el-breadcrumb-item>会员数量</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="block" align="center">
+        <span class="demonstration">选择统计日期</span>
+        <el-date-picker
+                v-model="startDate"
+                type="date"
+                placeholder="选择日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd">
+        </el-date-picker>
+        <span class="demonstration"> 至 </span>
+        <el-date-picker
+                v-model="endDate"
+                type="date"
+                placeholder="选择日期"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd">
+        </el-date-picker>
+        <el-button type="primary" @click="handleReport()">确定</el-button>
+    </div>
+    <div class="app-container">
+        <div class="box">
+            <div id="chart1" style="height:600px;"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+
+    new Vue({
+        el: '#app',
+        data: {
+            startDate: '',
+            endDate: ''
+        },
+        //钩子函数
+        mounted() {
+            this.handleReport();
+        },
+
+        methods: {
+            handleReport(){
+                console.log(this.startDate);
+                console.log(this.endDate);
+                var url = `/report/countUserDynamic.do?startDate=`+this.startDate+'&endDate='+this.endDate;
+                axios.get(url).then((res) => {
+                        console.log(res);
+                        myChart1.setOption(
+                            {
+                                title: {
+                                    text: '会员数量'
+                                },
+                                tooltip: {},
+                                legend: {
+                                    data: ['会员数量']
+                                },
+                                xAxis: {
+                                    data: res.data.data.months
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                    name: '会员数量',
+                                    type: 'line',
+                                    data: res.data.data.count
+                                }]
+                            });
+                    });
+
+                var myChart1 = echarts.init(document.getElementById('chart1'));
+            },
+
+        }
+    });
+</script>
+</html>

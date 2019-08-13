@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.dao.SetmealDao">
+    <!--新增套餐-->
+    <insert id="add" parameterType="Setmeal">
+        insert into t_setmeal(code,name,sex,age,helpCode,price,remark,attention,img)
+        values (#{code},#{name},#{sex},#{age},#{helpCode},#{price},#{remark},#{attention},#{img})
+    </insert>
+    
+    <!--绑定套餐和检查组多对多关系-->
+    <insert id="setSetmealAndCheckGroup" parameterType="map">
+        insert into t_setmeal_checkgroup(setmeal_id,checkgroup_id)
+        values (#{setmeal_id},#{checkgroup_id})
+    </insert>
+
+    <!--套餐分页-->
+    <select id="selectByCondition" parameterType="String" resultType="CheckGroup">
+        select * from t_setmeal
+        <if test="value !=null and value.length > 0">
+            where code = #{value} or name = #{value} or helpCode = #{value}
+        </if>
+    </select>
+
+
+    <select id="getSetmeal" resultType="Setmeal">
+        select * from t_setmeal
+    </select>
+
+
+    <resultMap type="Setmeal" id="baseResultMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="price" property="price"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+        <result column="img" property="img"/>
+    </resultMap>
+    <resultMap type="Setmeal" id="findByIdResultMap" extends="baseResultMap">
+        <collection property="checkGroups"
+                    column="id"
+                    select="com.itheima.dao.CheckGroupDao.findCheckGroupById">
+        </collection>
+    </resultMap>
+    <select id="findById" resultMap="findByIdResultMap">
+      select * from t_setmeal  where id=#{id}
+    </select>
+
+    <select id="findSetmealCount" resultType="map">
+        SELECT ts.`name`,COUNT(o.`id`) value FROM t_setmeal ts,t_order o WHERE o.`setmeal_id`=ts.`id` GROUP BY ts.`id`
+    </select>
+
+    <select id="getSetmealReportMembership" resultType="map">
+        SELECT sex name,COUNT(sex) value FROM t_member GROUP BY sex
+    </select>
+
+    <select id="getSetmealReportMembershipByAge"  resultType="int">
+        SELECT COUNT(id) value FROM t_member WHERE age BETWEEN #{key_x} AND #{key_x1}
+    </select>
+
+
+    <select id="getSetmealReportMembershipByAgemax"  resultType="int">
+        SELECT COUNT(id) value FROM t_member WHERE age &gt;= #{value}
+    </select>
+
+    <select id="getSetmealReportMembershipByAge1"  resultType="com.itheima.pojo.Member">
+        SELECT birthday FROM t_member
+    </select>
+
+    <select id="queryJurisdictionByUser" parameterType="string" resultType="int">
+        SELECT
+            tur.`role_id`
+        FROM
+            t_user tu,
+            t_user_role tur
+        WHERE
+            tu.`username`=#{username}
+        AND
+            tu.`id`=tur.`user_id`
+    </select>
+
+    <select id="JurisdictionById" parameterType="int" resultType="Menu">
+        SELECT
+            tm.*
+        FROM
+            t_menu tm,
+            t_role_menu trm
+        WHERE
+            trm.`role_id`=#{roleId}
+            AND
+            trm.`menu_id`=tm.`id`
+    </select>
+
+</mapper>
